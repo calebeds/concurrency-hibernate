@@ -3,6 +3,7 @@ package com.calebe.concurrency.domain;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 @Entity
 @Table(name = "products")
@@ -11,6 +12,8 @@ public class VersionedProduct {
     private Integer id;
     private String name;
     private Integer stock;
+    @Version
+    private int version;
 
     public VersionedProduct() {
     }
