@@ -75,4 +75,33 @@ class ConcurrencyApplicationTests {
 		});
 	}
 
+	@Test
+	void testExplicitPessimisticLockingForceIncrement() {
+		txRunner.executeInTransaction(em -> {
+			VersionedProduct product = em.find(VersionedProduct.class, 1, LockModeType.PESSIMISTIC_FORCE_INCREMENT);
+		});
+	}
+
+	@Test
+	void testExplicitPessimisticLockingRead() {
+		txRunner.executeInTransaction(em -> {
+			VersionedProduct product = em.find(VersionedProduct.class, 1, LockModeType.PESSIMISTIC_READ);
+			txRunner.executeInTransaction(em2 ->{
+				VersionedProduct insideProduct = em.find(VersionedProduct.class, 1, LockModeType.PESSIMISTIC_READ);
+			});
+		});
+	}
+
+	@Test
+	void testExplicitPessimisticLockingWrite() {
+		txRunner.executeInTransaction(em -> {
+			VersionedProduct product =
+					em.find(VersionedProduct.class, 1, LockModeType.PESSIMISTIC_WRITE);
+			txRunner.executeInTransaction(em2 -> {
+				VersionedProduct insideProduct = em.find(VersionedProduct.class, 1, LockModeType.PESSIMISTIC_WRITE);
+				insideProduct.setStock(insideProduct.getStock() + 1);
+			});
+		});
+	}
+
 }
