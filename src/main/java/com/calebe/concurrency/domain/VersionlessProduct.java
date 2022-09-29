@@ -7,23 +7,21 @@ import org.hibernate.annotations.OptimisticLocking;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Version;
 
 @Entity
 @Table(name = "products")
+@OptimisticLocking(type = OptimisticLockType.DIRTY)
 @DynamicUpdate
-public class VersionedProduct {
+public class VersionlessProduct {
     @Id
     private Integer id;
     private String name;
     private Integer stock;
-    @Version
-    private int version;
 
-    public VersionedProduct() {
+    public VersionlessProduct() {
     }
 
-    public VersionedProduct(Integer id, String name, Integer stock) {
+    public VersionlessProduct(Integer id, String name, Integer stock) {
         this.id = id;
         this.name = name;
         this.stock = stock;
