@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.persistence.LockModeType;
+
 @SpringBootTest
 class ConcurrencyApplicationTests {
 
@@ -58,6 +60,18 @@ class ConcurrencyApplicationTests {
 				insideProduct.setStock(insideProduct.getStock() + 1);
 			});
 			product.setStock(product.getStock() + 1);
+		});
+	}
+
+	@Test
+	void testExplicitOptmisticLocking() {
+		txRunner.executeInTransaction(em -> {
+			VersionedProduct product = em.find(VersionedProduct.class, 1, LockModeType.OPTIMISTIC);
+			//imagine calculating something very important here
+			txRunner.executeInTransaction(em2 -> {
+				VersionedProduct insideProduct = em.find(VersionedProduct.class, 1);
+				insideProduct.setStock(insideProduct.getStock() + 1);
+			});
 		});
 	}
 
