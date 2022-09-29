@@ -18,9 +18,9 @@ class ConcurrencyApplicationTests {
 			VersionedProduct product = em.find(VersionedProduct.class, 1);
 			txRunner.executeInTransaction(em2 -> {
 				VersionedProduct insideProduct = em.find(VersionedProduct.class, 1);
-				insideProduct.setStock(insideProduct.getStock() + 1);
+				insideProduct.setStock(insideProduct.getStock() + 1);//Here sets to 4
 			});
-			product.setStock(product.getStock() + 10);
+			product.setStock(product.getStock() + 10);//But here updates the database with 13. Which means it doesn't take into account the previous update
 		});
 	}
 
